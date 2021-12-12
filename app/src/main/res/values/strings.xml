@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Body Tuner Demo</string>
+    <string name="adjust">Adjust</string>
+    <string name="_0">0</string>
+    <string name="body_tuner">Body Tuner</string>
+    <string name="keo_de">kéo vùng màu đỏ để zoom</string>
+</resources>

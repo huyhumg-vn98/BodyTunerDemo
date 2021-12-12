@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/NCpc/Desktop/BodyTunerDemo (3)/BodyTunerDemo/BodyTunerMagic/src/main/res/layout/layout_body_tuner_magic.xml" value="0.1703125" />
+        <entry key="..\:/Users/NCpc/Desktop/BodyTunerDemo (3)/BodyTunerDemo/app/src/main/res/layout/activity_main.xml" value="0.2796875" />
+        <entry key="..\:/Users/NCpc/Desktop/BodyTunerDemo (3)/BodyTunerDemo/app/src/main/res/layout/activity_main2.xml" value="0.2796875" />
+        <entry key="..\:/Users/NCpc/Desktop/BodyTunerDemo (3)/BodyTunerDemo/app/src/main/res/layout/activity_main3.xml" value="0.2796875" />
+        <entry key="..\:/Users/huyhu/AndroidStudioProjects/BodyTunerDemo/BodyTunerMagic/src/main/res/drawable/mg_bg_seek_bar_color_splash.xml" value="0.5112359550561798" />
+        <entry key="..\:/Users/huyhu/AndroidStudioProjects/BodyTunerDemo/BodyTunerMagic/src/main/res/layout/activity_main.xml" value="0.5010416666666667" />
+        <entry key="..\:/Users/huyhu/AndroidStudioProjects/BodyTunerDemo/BodyTunerMagic/src/main/res/layout/layout_body_tuner_magic.xml" value="0.33" />
+        <entry key="..\:/Users/huyhu/AndroidStudioProjects/BodyTunerDemo/app/src/main/res/drawable-v24/custom_bg_auto_manual.xml" value="0.5072916666666667" />
+        <entry key="..\:/Users/huyhu/AndroidStudioProjects/BodyTunerDemo/app/src/main/res/drawable-v24/custom_bg_bottom_body_tuner.xml" value="0.5072916666666667" />
+        <entry key="..\:/Users/huyhu/AndroidStudioProjects/BodyTunerDemo/app/src/main/res/drawable/line.xml" value="0.40625" />
+        <entry key="..\:/Users/huyhu/AndroidStudioProjects/BodyTunerDemo/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/Users/huyhu/AndroidStudioProjects/BodyTunerDemo/app/src/main/res/layout/activity_main2.xml" value="0.440625" />
+        <entry key="..\:/Users/huyhu/AndroidStudioProjects/BodyTunerDemo/app/src/main/res/layout/activity_main3.xml" value="0.440625" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

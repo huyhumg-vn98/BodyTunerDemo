@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rllCustomView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:id="@+id/customView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:splitMotionEvents="false">
+
+            <ImageView
+                android:id="@+id/imageCustomView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY" />
+
+            <FrameLayout
+                android:id="@+id/backGroundCutImage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="#80E91E63"
+                android:visibility="invisible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/keo_de"
+                    android:textColor="#ff0" />
+            </FrameLayout>
+
+
+            <View
+                android:id="@+id/viewTop"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:translationY="20dp" />
+
+
+            <RelativeLayout
+                android:id="@+id/rllTop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:translationY="20dp">
+
+                <ImageView
+                    android:id="@+id/lineTop"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layerType="software"
+                    android:src="@drawable/custom_line_body_tuner"
+                    android:translationY="20dp" />
+
+                <ImageView
+                    android:id="@+id/iconTop"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:scaleType="fitXY"
+                    android:splitMotionEvents="false"
+                    android:src="@drawable/ic_move" />
+
+            </RelativeLayout>
+
+
+            <View
+                android:id="@+id/viewBottom"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:translationY="100dp" />
+
+            <RelativeLayout
+                android:id="@+id/rllBottom"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:translationY="100dp">
+
+                <ImageView
+                    android:id="@+id/lineBottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@drawable/custom_line_body_tuner"
+                    android:layerType="software"
+                    android:translationY="20dp" />
+
+                <ImageView
+                    android:id="@+id/iconBottom"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/ic_move" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_bg_bottom_body_tuner"
+        android:orientation="vertical"
+        android:paddingTop="40dp">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:id="@+id/mgLayoutViewSelectAction"
+                android:layout_width="80dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/custom_bg_auto_manual">
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp" />
+
+                <View
+                    android:id="@+id/cardViewBrush"
+                    android:layout_width="40dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/custom_bg_manu_click" />
+
+                <TextView
+                    android:id="@+id/txtBrush"
+                    android:layout_width="40dp"
+                    android:layout_height="20dp"
+                    android:gravity="center"
+                    android:text="@string/auto"
+                    android:textColor="#8893CB"
+                    android:textSize="10sp"
+                    tools:ignore="HardcodedText" />
+
+                <TextView
+                    android:id="@+id/txtEaser"
+                    android:layout_width="40dp"
+                    android:layout_height="20dp"
+                    android:layout_toEndOf="@+id/txtBrush"
+                    android:gravity="center"
+                    android:text="@string/manual"
+                    android:textColor="#BBBBBB"
+                    android:textSize="10sp"
+                    tools:ignore="SmallSp" />
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true">
+
+
+                <ImageView
+                    android:id="@+id/iconUndoBodyTuner"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_previous"
+                    app:tint="#8893cb" />
+
+                <ImageView
+                    android:id="@+id/iconRedoBodyTuner"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="20dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_next" />
+
+                <ImageView
+                    android:tint="#8893cb"
+                    android:id="@+id/iconCompareBodyTuner"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="20dp"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_compare"
+                    tools:ignore="UseAppTint" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_weight="1.5"
+                android:text="@string/adjust"
+                android:textColor="#000934" />
+
+            <SeekBar
+                android:id="@+id/seekbarBodyTuner"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="8.5"
+                android:paddingTop="9dp"
+                android:paddingBottom="9dp"
+                android:progressDrawable="@drawable/custom_bg_seekbar_body_tuner"
+                android:thumb="@drawable/ic_seekbar_body_tuner" />
+
+            <TextView
+                android:id="@+id/txtSeekbar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/_0"
+                android:textColor="#000934" />
+
+        </LinearLayout>
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/custom_bg_bottom_body_tuner">
+
+            <ImageView
+                android:id="@+id/iconCloseBodyTunerMagic"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:src="@drawable/ic_x"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/body_tuner"
+                android:textColor="#000934"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+
+            <ImageView
+                android:id="@+id/iconSaveBodyTunerMagic"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:src="@drawable/ic_tick"
+                tools:ignore="ContentDescription" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</LinearLayout>
