@@ -43,8 +43,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, View.OnClickList
         wBitmapOrigin = bitmapOrigin.width
         hBitmapOrigin = bitmapOrigin.height
 
-        rllCustomView.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
+        rllCustomView.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 maxHeightZoom = rllCustomView.height.toFloat()
                 newWidthBitmapOrigin = rllCustomView.width.toFloat()
@@ -105,8 +104,7 @@ class MainActivity : AppCompatActivity(), View.OnTouchListener, View.OnClickList
                     )
                     hideView()
                     backGroundCutImage.layoutParams.height = bitmap2ViewNew.height
-                    rllBottom.translationY =
-                        (bitmap1View.height + bitmap2ViewNew.height).toFloat() - covertDptoPx(20f)
+                    rllBottom.translationY = (bitmap1View.height + bitmap2ViewNew.height).toFloat() - covertDptoPx(20f)
                     viewBottom.translationY = rllBottom.translationY
                     imageCustomView.setImageBitmap(bitmapBodyNew)
                 }

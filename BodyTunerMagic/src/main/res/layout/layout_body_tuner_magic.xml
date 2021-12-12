@@ -28,6 +28,13 @@
                 android:layout_height="wrap_content"
                 android:scaleType="fitXY" />
 
+
+            <View
+                android:id="@+id/viewBackgroundCutImage"
+                android:background="#2D8CB7"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+
             <FrameLayout
                 android:id="@+id/backGroundCutImage"
                 android:layout_width="match_parent"
@@ -50,7 +57,6 @@
                 android:layout_height="40dp"
                 android:translationY="20dp" />
 
-
             <RelativeLayout
                 android:id="@+id/rllTop"
                 android:layout_width="match_parent"
@@ -61,16 +67,15 @@
                     android:id="@+id/lineTop"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
+                    android:layout_centerVertical="true"
                     android:layerType="software"
-                    android:src="@drawable/custom_line_body_tuner"
-                    android:translationY="20dp" />
+                    android:src="@drawable/custom_line_body_tuner" />
 
                 <ImageView
                     android:id="@+id/iconTop"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_alignParentEnd="true"
-                    android:scaleType="fitXY"
                     android:splitMotionEvents="false"
                     android:src="@drawable/ic_move" />
 
@@ -90,19 +95,18 @@
                 android:translationY="100dp">
 
                 <ImageView
+                    android:layout_centerVertical="true"
                     android:id="@+id/lineBottom"
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:background="@drawable/custom_line_body_tuner"
-                    android:layerType="software"
-                    android:translationY="20dp" />
+                    android:layerType="software" />
 
                 <ImageView
                     android:id="@+id/iconBottom"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_alignParentEnd="true"
-                    android:scaleType="fitXY"
                     android:src="@drawable/ic_move" />
             </RelativeLayout>
         </RelativeLayout>

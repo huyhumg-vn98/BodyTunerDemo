@@ -21,6 +21,8 @@ class Main3Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main3)
 
+
+
         pickImage.setOnClickListener {
             val intent = Intent()
             intent.type = "image/*"

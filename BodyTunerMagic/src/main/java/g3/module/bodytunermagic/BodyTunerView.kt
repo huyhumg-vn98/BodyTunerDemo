@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.SeekBar
+import android.widget.Toast
 import kotlinx.android.synthetic.main.layout_body_tuner_magic.view.*
 import java.lang.Exception
 import kotlin.math.roundToInt
@@ -89,8 +90,13 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                         true
                     )
                 }
+                Log.d("huy","")
+                iconTop.layoutParams.width = (newWidthBitmapOrigin* 0.1).toInt()
+                iconTop.layoutParams.height = (newWidthBitmapOrigin * 0.1).toInt()
+                iconBottom.layoutParams.width = (newWidthBitmapOrigin* 0.1).toInt()
+                iconBottom.layoutParams.height = (newWidthBitmapOrigin * 0.1).toInt()
                 imageCustomView.setImageBitmap(bitmapOrigin)
-                backGroundCutImage.translationY = newHeightBitmapOrigin * 0.3f
+//                backGroundCutImage.translationY = newHeightBitmapOrigin * 0.3f
                 setTranslateY(bitmapOrigin!!.width, bitmapOrigin!!.height)
                 bitmapOriginDefault = bitmapOrigin!!
                 bitmapBodyNewView = bitmapOrigin!!
@@ -127,6 +133,7 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                         hNewReal = maxHeightZoomReal.toInt()
                         Log.d("huy", "to qua roi")
                         seekbarBodyTuner.progress = progressMax
+                        Toast.makeText(context,"anh to qua ",Toast.LENGTH_SHORT).show()
                         return
                     }
                     progressMax = seekbarBodyTuner.progress
@@ -148,8 +155,8 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
                     hideView()
                     backGroundCutImage.layoutParams.height = bitmap2ViewNew.height
-                    rllBottom.translationY =
-                        (bitmap1View.height + bitmap2ViewNew.height).toFloat() - covertDptoPx(20f)
+                    viewBackgroundCutImage.layoutParams.height = bitmap2ViewNew.height
+                    rllBottom.translationY = (bitmap1View.height + bitmap2ViewNew.height).toFloat() - covertDptoPx(20f)
                     viewBottom.translationY = rllBottom.translationY
                     imageCustomView.setImageBitmap(bitmapBodyNewView)
                 }
@@ -191,6 +198,7 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private fun onTouchView() {
+        viewBackgroundCutImage.setOnTouchListener(this)
         viewTop.setOnTouchListener(this)
         viewBottom.setOnTouchListener(this)
         iconCompareBodyTuner.setOnTouchListener(this)
@@ -208,17 +216,17 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
     fun setTranslateY(widthBitmap: Int, heightBitmap: Int) {
         backGroundCutImage.layoutParams.height = (heightBitmap * 0.3f).toInt()
+        viewBackgroundCutImage.layoutParams.height = (heightBitmap * 0.3f).toInt()
         backGroundCutImage.translationY = (heightBitmap * 0.3f)
+        viewBackgroundCutImage.translationY =  backGroundCutImage.translationY
         backGroundCutImage.layoutParams.width = widthBitmap
+        viewBackgroundCutImage.layoutParams.width = widthBitmap
         rllTop.layoutParams.width = widthBitmap
         viewTop.layoutParams.width = widthBitmap
         viewBottom.layoutParams.width = widthBitmap
         rllTop.translationY = backGroundCutImage.translationY - covertDptoPx(20f)
         rllBottom.layoutParams.width = widthBitmap
-        rllBottom.translationY =
-            backGroundCutImage.translationY + backGroundCutImage.layoutParams.height - covertDptoPx(
-                20f
-            )
+        rllBottom.translationY = backGroundCutImage.translationY + backGroundCutImage.layoutParams.height - covertDptoPx(20f)
         viewTop.translationY = rllTop.translationY
         viewBottom.translationY = rllBottom.translationY
     }
@@ -278,58 +286,30 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private fun cutViewReal(){
-        val ratioBitmap1View = bitmap1View.width / bitmap1View.height.toFloat()
-        val hBitmap1Real = wBitmapReal / ratioBitmap1View
-        val ratioBitmap2View = bitmap2View.width / bitmap2View.height.toFloat()
-        val hBitmap2Real = wBitmapReal / ratioBitmap2View
+        try {
+            val ratioBitmap1View = bitmap1View.width / bitmap1View.height.toFloat()
+            val hBitmap1Real = wBitmapReal / ratioBitmap1View
+            val ratioBitmap2View = bitmap2View.width / bitmap2View.height.toFloat()
+            val hBitmap2Real = wBitmapReal / ratioBitmap2View
 //        val ratioBitmapOrigin = bitmapOrigin!!.width / bitmapOrigin!!.height.toFloat()
 //        val hBitmapReal = wBitmapReal /ratioBitmapOrigin
 
-        bitmap1Real = Bitmap.createBitmap(bitmapRealDefault!!,0,0,bitmapRealDefault!!.width,hBitmap1Real.roundToInt())
-        bitmap2Real = Bitmap.createBitmap(bitmapRealDefault!!,0,bitmap1Real.height,bitmapRealDefault!!.width,hBitmap2Real.roundToInt())
+            bitmap1Real = Bitmap.createBitmap(bitmapRealDefault!!,0,0,bitmapRealDefault!!.width,hBitmap1Real.roundToInt())
+            bitmap2Real = Bitmap.createBitmap(bitmapRealDefault!!,0,bitmap1Real.height,bitmapRealDefault!!.width,hBitmap2Real.roundToInt())
 //        val hBitmap3Real = hBitmapReal - bitmap1ViewReal.height - bitmap2ViewReal.height
-        val hBitmap3Real = bitmapRealDefault!!.height - bitmap1Real!!.height - bitmap2Real!!.height
-        bitmap3Real = Bitmap.createBitmap(bitmapRealDefault!!,0,bitmap1Real.height+bitmap2Real.height,bitmapRealDefault!!.width,hBitmap3Real)
+            val hBitmap3Real = bitmapRealDefault!!.height - bitmap1Real!!.height - bitmap2Real!!.height
+            bitmap3Real = Bitmap.createBitmap(bitmapRealDefault!!,0,bitmap1Real.height+bitmap2Real.height,bitmapRealDefault!!.width,hBitmap3Real)
 
-        Log.d("huy","bitmap1real = ${bitmap1Real.height}")
-        Log.d("huy","bitmap2real = ${bitmap2Real.height}")
-        Log.d("huy","bitmap1real = ${bitmap3Real.height}")
+            Log.d("huy","bitmap1real = ${bitmap1Real.height}")
+            Log.d("huy","bitmap2real = ${bitmap2Real.height}")
+            Log.d("huy","bitmap1real = ${bitmap3Real.height}")
+        }catch (EX : Exception){
+            Log.d("huy", "lỗi rồi")
+        }
+
+
 
     }
-
-//    private fun saveBitmap(): Bitmap {
-//        val ratioBitmap1View = bitmap1View.width / bitmap1View.height.toFloat()
-//        val hBitmap1Real = wBitmapReal / ratioBitmap1View
-//
-//        val ratioBitmap2SCaleView = bitmap2ViewNew.width / bitmap2ViewNew.height.toFloat()
-//        val hBitmap2Real = wBitmapReal / ratioBitmap2SCaleView
-//
-//        val ratioBitmap3View = bitmap3View.width / bitmap3View.height.toFloat()
-//        val hBitmap3Real = wBitmapReal / ratioBitmap3View
-//
-//        val bitmap1Real =
-//            Bitmap.createScaledBitmap(bitmap1View, wBitmapReal, hBitmap1Real.toInt(), true)
-//        val bitmap2Real =
-//            Bitmap.createScaledBitmap(bitmap2ViewNew, wBitmapReal, hBitmap2Real.toInt(), true)
-//        val bitmap3Real =
-//            Bitmap.createScaledBitmap(bitmap3View, wBitmapReal, hBitmap3Real.toInt(), true)
-//
-//
-//        val hBitmapReal = bitmap1Real.height + bitmap2Real.height + bitmap3Real.height
-//        val bitmapReal = Bitmap.createBitmap(wBitmapReal, hBitmapReal, Bitmap.Config.ARGB_8888)
-//        val canvas = Canvas(bitmapReal)
-//        canvas.drawBitmap(bitmap1Real, 0f, 0f, paint)
-//        canvas.drawBitmap(bitmap2Real, 0f, bitmap1Real.height.toFloat(), paint)
-//        canvas.drawBitmap(
-//            bitmap3Real,
-//            0f,
-//            (bitmap1Real.height + bitmap2Real.height).toFloat(),
-//            paint
-//        )
-//        return bitmapReal
-//    }
-
-
     private fun covertDptoPx(dp: Float): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -340,6 +320,7 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
     private var pointRllTop = PointF(0f, 0f)
     private var pointRllBottom = PointF(0f, 0f)
+    private var pointBackGroundCutImage = PointF(0f, 0f)
     private var startTranslateTopY = 0f
     private var startTranslateBottomY = 0f
     private var distanceTopY = 0f
@@ -348,6 +329,9 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private var newTranslateBottomY = 0f
     private var hBgCutImage = 0f
     private var hNewCusImage = 0f
+    private var startTranslateBackGroundCutImageY = 0f
+   private var translateBackGroundCutImageY = 0f
+   private var newTranslateBackGroundCutImageY = 0f
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -385,8 +369,9 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             Log.d("huy", "$distanceTopY ")
                             rllTop.translationY = newTranslateTopY
                             backGroundCutImage.translationY = newTranslateTopY + covertDptoPx(20f)
-
                             backGroundCutImage.layoutParams.height = hNewCusImage.toInt()
+                            viewBackgroundCutImage.translationY =  backGroundCutImage.translationY
+                            viewBackgroundCutImage.layoutParams.height = hNewCusImage.toInt()
                             Log.d("huy", "${backGroundCutImage.height}")
 
                             backGroundCutImage.invalidate()
@@ -438,6 +423,7 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             }
                             rllBottom.translationY = newTranslateBottomY
                             backGroundCutImage.layoutParams.height = hNewCusImage.toInt()
+                            viewBackgroundCutImage.layoutParams.height = hNewCusImage.toInt()
                             backGroundCutImage.invalidate()
                             backGroundCutImage.requestLayout()
                         }
@@ -448,6 +434,47 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             cutViewBitmap(rllTop, rllBottom)
                             cutViewReal()
 
+                        }
+                    }
+                }
+
+                viewBackgroundCutImage ->{
+                    when (event.action){
+                        MotionEvent.ACTION_DOWN ->{
+                            bitmapOrigin = bitmapBodyNewView
+                            bitmapRealDefault = bitmapBodyNewReal
+                            backGroundCutImage.visibility = View.VISIBLE
+                            rllTop.visibility = View.INVISIBLE
+                            rllBottom.visibility = View.INVISIBLE
+                            Log.d("huy","backGroundCutImage")
+                            hBgCutImage = (backGroundCutImage.layoutParams.height).toFloat()
+                            pointBackGroundCutImage = PointF(backGroundCutImage.translationX,backGroundCutImage.translationY)
+                            startTranslateBackGroundCutImageY = event.y
+                        }
+                        MotionEvent.ACTION_MOVE -> {
+                            translateBackGroundCutImageY = event.y - startTranslateBackGroundCutImageY
+                            newTranslateBackGroundCutImageY = pointBackGroundCutImage.y + translateBackGroundCutImageY
+
+                            if (newTranslateBackGroundCutImageY <= 0f){
+                                newTranslateBackGroundCutImageY = 0f
+                            }
+                            if (newTranslateBackGroundCutImageY+ hBgCutImage >= bitmapOrigin!!.height){
+                                newTranslateBackGroundCutImageY = bitmapOrigin!!.height - hBgCutImage
+                            }
+                            backGroundCutImage.translationY = newTranslateBackGroundCutImageY
+                            rllTop.translationY = backGroundCutImage.translationY- covertDptoPx(20f)
+                            viewTop.translationY = rllTop.translationY
+                            rllBottom.translationY = backGroundCutImage.translationY-covertDptoPx(20f)+ backGroundCutImage.layoutParams.height
+                            viewBottom.translationY = rllBottom.translationY
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            seekbarBodyTuner.progress = 0
+                            rllTop.visibility = View.VISIBLE
+                            rllBottom.visibility = View.VISIBLE
+                            cutViewBitmap(rllTop, rllBottom)
+                            cutViewReal()
+                            viewBackgroundCutImage.translationY = backGroundCutImage.translationY
+                            backGroundCutImage.visibility = View.INVISIBLE
                         }
                     }
                 }
