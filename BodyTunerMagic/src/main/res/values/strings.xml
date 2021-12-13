@@ -3,7 +3,8 @@
     <string name="adjust">Adjust</string>
     <string name="_0">0</string>
     <string name="body_tuner">Body Tuner</string>
-    <string name="keo_de">kéo vùng màu đỏ để zoom</string>
+    <string name="keo_vung_chon">Drag the gray area to elongate legs</string>
     <string name="auto">Auto</string>
     <string name="manual">Manual</string>
+    <string name="max_size">Reached stretching limit</string>
 </resources>

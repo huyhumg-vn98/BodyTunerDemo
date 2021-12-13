@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Body Tuner Demo</string>
+    <string name="adjust">Kéo</string>
+    <string name="_0">0</string>
+    <string name="body_tuner">Body Tuner</string>
+    <string name="keo_vung_chon">Kéo vùng màu xám để kéo dài chân ra</string>
+    <string name="auto">Auto</string>
+    <string name="manual">Manual</string>
+    <string name="max_size">Đã đạt tới giới hạn giãn ảnh</string>
+</resources>

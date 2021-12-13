@@ -12,13 +12,14 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.SeekBar
-import android.widget.Toast
 import kotlinx.android.synthetic.main.layout_body_tuner_magic.view.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.Exception
 import kotlin.math.roundToInt
 
 class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
-    View.OnTouchListener, View.OnClickListener {
+    View.OnTouchListener {
     private var bitmapOrigin: Bitmap? = null
     private var bitmapRealDefault: Bitmap? = null
     private var wBitmapOrigin = 0
@@ -29,17 +30,17 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private var hBitmapReal = 0
     private var listBitmapView = ArrayList<Bitmap>()
     private var listBitmapReal = ArrayList<Bitmap>()
-    lateinit var bitmap1View: Bitmap
-    lateinit var bitmap2View: Bitmap
-    lateinit var bitmap3View: Bitmap
-    lateinit var bitmap1Real : Bitmap
-    lateinit var bitmap2Real : Bitmap
-    lateinit var bitmap3Real : Bitmap
-    lateinit var bitmapBodyNewView: Bitmap
-    lateinit var bitmapBodyNewReal: Bitmap
-    lateinit var bitmap2ViewNew: Bitmap
-    lateinit var bitmap2NewReal: Bitmap
-    lateinit var bitmapOriginDefault: Bitmap
+    private lateinit var bitmap1View: Bitmap
+    private lateinit var bitmap2View: Bitmap
+    private lateinit var bitmap3View: Bitmap
+    private lateinit var bitmap1Real: Bitmap
+    private lateinit var bitmap2Real: Bitmap
+    private lateinit var bitmap3Real: Bitmap
+    private lateinit var bitmapBodyNewView: Bitmap
+    private lateinit var bitmapBodyNewReal: Bitmap
+    private lateinit var bitmap2ViewNew: Bitmap
+    private lateinit var bitmap2NewReal: Bitmap
+    private lateinit var bitmapOriginDefault: Bitmap
     private var bodyTunerListener: BodyTunerListener? = null
     private var paint = Paint()
     private var maxHeightZoomView = 0f
@@ -48,6 +49,9 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private var hNewReal = 0
     private var progressMax = 0
     private var positionListBitmap = -1
+    private var hIcon = 0
+    private var wIcon = 0
+    private var progressNew = 0
 
     init {
         LayoutInflater.from(context).inflate(R.layout.layout_body_tuner_magic, this, true)
@@ -60,8 +64,8 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         hBitmapOrigin = bitmapOrigin!!.height
         wBitmapReal = wBitmapOrigin
         hBitmapReal = hBitmapOrigin
-        Log.d("huy","$wBitmapReal")
-        Log.d("huy","$hBitmapReal")
+        Log.d("huy", "$wBitmapReal")
+        Log.d("huy", "$hBitmapReal")
         getSizeViewDraw()
         seekbarTranslate()
         onTouchView()
@@ -73,12 +77,11 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 maxHeightZoomView = rllCustomView.height.toFloat()
-//                maxHeightZoomReal = bitmapRealDefault!!.width *(rllCustomView.height/rllCustomView.width.toFloat())
-
                 newWidthBitmapOrigin = rllCustomView.width.toFloat()
-                newHeightBitmapOrigin = newWidthBitmapOrigin * (hBitmapOrigin / wBitmapOrigin.toFloat())
+                newHeightBitmapOrigin =
+                    newWidthBitmapOrigin * (hBitmapOrigin / wBitmapOrigin.toFloat())
                 if (newHeightBitmapOrigin > rllCustomView.height.toFloat()) {
-                    newHeightBitmapOrigin = rllCustomView.height * 0.8.toFloat()
+                    newHeightBitmapOrigin = rllCustomView.height * 0.9.toFloat()
                     newWidthBitmapOrigin =
                         newHeightBitmapOrigin * (wBitmapOrigin / hBitmapOrigin.toFloat())
                 }
@@ -90,24 +93,9 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                         true
                     )
                 }
-                Log.d("huy","")
-                iconTop.layoutParams.width = (newWidthBitmapOrigin* 0.1).toInt()
-                iconTop.layoutParams.height = (newWidthBitmapOrigin * 0.1).toInt()
-                iconBottom.layoutParams.width = (newWidthBitmapOrigin* 0.1).toInt()
-                iconBottom.layoutParams.height = (newWidthBitmapOrigin * 0.1).toInt()
-                imageCustomView.setImageBitmap(bitmapOrigin)
-//                backGroundCutImage.translationY = newHeightBitmapOrigin * 0.3f
-                setTranslateY(bitmapOrigin!!.width, bitmapOrigin!!.height)
                 bitmapOriginDefault = bitmapOrigin!!
-                bitmapBodyNewView = bitmapOrigin!!
-                bitmapBodyNewReal = bitmapRealDefault!!
-                listBitmapView.add(bitmapOriginDefault)
-                listBitmapReal.add(bitmapRealDefault!!)
-                positionListBitmap++
-                cutViewBitmap(rllTop, rllBottom)
-                cutViewReal()
-                bitmap2ViewNew = bitmap2View
-                bitmap2NewReal = bitmap2Real
+                seekbarBodyTuner.progress = 50
+                defaultTranslateView()
                 rllCustomView.viewTreeObserver.removeOnGlobalLayoutListener(this)
             }
         })
@@ -115,52 +103,15 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
     private fun seekbarTranslate() {
         seekbarBodyTuner.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                if (p1 == 0) {
+            override fun onProgressChanged(p0: SeekBar?, progress: Int, p2: Boolean) {
+                if (progress == 50) {
+                    progressNew = 0
                     imageCustomView.setImageBitmap(bitmapOrigin)
                 } else {
-                    bitmap2ViewNew = bitmapScale(bitmap2View, p1)
-                    bitmap2NewReal = bitmapRealScale(bitmap2Real,p1)
-
-                    Log.d("huy","bitmap2ViewNewReal = ${bitmap2NewReal.height}")
-                    Log.d("huy","bitmap2ViewNew = ${bitmap2ViewNew.height}")
-
-                    hNewView = bitmap1View.height + bitmap2ViewNew.height + bitmap3View.height
-                    hNewReal = bitmap1Real.height + bitmap2NewReal.height + bitmap3Real.height
-
-                    if (hNewView > maxHeightZoomView) {
-                        hNewView = maxHeightZoomView.toInt()
-                        hNewReal = maxHeightZoomReal.toInt()
-                        Log.d("huy", "to qua roi")
-                        seekbarBodyTuner.progress = progressMax
-                        Toast.makeText(context,"anh to qua ",Toast.LENGTH_SHORT).show()
-                        return
-                    }
-                    progressMax = seekbarBodyTuner.progress
-                    bitmapBodyNewView = Bitmap.createBitmap(bitmapOrigin!!.width, hNewView, Bitmap.Config.ARGB_8888)
-                    bitmapBodyNewReal = Bitmap.createBitmap(bitmapRealDefault!!.width,hNewReal,Bitmap.Config.ARGB_8888)
-                    val canvasBitmapView = Canvas(bitmapBodyNewView)
-                    canvasBitmapView.drawBitmap(bitmap1View, 0f, 0f, paint)
-                    canvasBitmapView.drawBitmap(bitmap2ViewNew, 0f, bitmap1View.height.toFloat(), paint)
-                    canvasBitmapView.drawBitmap(
-                        bitmap3View,
-                        0f,
-                        bitmap2ViewNew.height + bitmap1View.height.toFloat(),
-                        paint
-                    )
-                   val canvasBitmapReal = Canvas(bitmapBodyNewReal)
-                    canvasBitmapReal.drawBitmap(bitmap1Real,0f,0f,paint)
-                    canvasBitmapReal.drawBitmap(bitmap2NewReal,0f,bitmap1Real.height.toFloat(),paint)
-                    canvasBitmapReal.drawBitmap(bitmap3Real,0f,bitmap2NewReal.height+bitmap1Real.height.toFloat(),paint)
-
-                    hideView()
-                    backGroundCutImage.layoutParams.height = bitmap2ViewNew.height
-                    viewBackgroundCutImage.layoutParams.height = bitmap2ViewNew.height
-                    rllBottom.translationY = (bitmap1View.height + bitmap2ViewNew.height).toFloat() - covertDptoPx(20f)
-                    viewBottom.translationY = rllBottom.translationY
-                    imageCustomView.setImageBitmap(bitmapBodyNewView)
+                    progressNew = (50 - progress) * (-1)
+                    bitmapDraw(progressNew)
                 }
-                txtSeekbar.text = p1.toString()
+                txtSeekbar.text = progressNew.toString()
             }
 
             override fun onStartTrackingTouch(p0: SeekBar?) {}
@@ -181,6 +132,7 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                 }
 
                 visibleView()
+                txtMaxSize.visibility = View.GONE
                 iconCompareBodyTuner.setColorFilter(Color.parseColor("#8167fd"))
                 iconUndoBodyTuner.setColorFilter(Color.parseColor("#8167fd"))
                 listBitmapView.add(bitmapBodyNewView)
@@ -190,11 +142,180 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         })
     }
 
+
+    private fun bitmapDraw(progress: Int) {
+        bitmap2ViewNew = bitmapScale(bitmap2View, progress)
+        bitmap2NewReal = bitmapScale(bitmap2Real, progress)
+        hNewView = bitmap1View.height + bitmap2ViewNew.height + bitmap3View.height
+        hNewReal = bitmap1Real.height + bitmap2NewReal.height + bitmap3Real.height
+
+        if (hNewView > maxHeightZoomView) {
+            hNewView = maxHeightZoomView.toInt()
+            hNewReal = maxHeightZoomReal.toInt()
+            seekbarBodyTuner.progress = progressMax
+            txtMaxSize.visibility = View.VISIBLE
+            return
+        }
+        progressMax = seekbarBodyTuner.progress
+        bitmapBodyNewView =
+            Bitmap.createBitmap(bitmapOrigin!!.width, hNewView, Bitmap.Config.ARGB_8888)
+        bitmapBodyNewReal = Bitmap.createBitmap(
+            bitmapRealDefault!!.width,
+            hNewReal,
+            Bitmap.Config.ARGB_8888
+        )
+        drawBitmapView(bitmapBodyNewView)
+        GlobalScope.launch {
+            drawBitmapReal(bitmapBodyNewReal)
+        }
+        hideView()
+        backGroundCutImage.layoutParams.height = bitmap2ViewNew.height
+        viewBackgroundCutImage.layoutParams.height = bitmap2ViewNew.height
+        rllBottom.translationY =
+            (bitmap1View.height + bitmap2ViewNew.height).toFloat() - (hIcon / 2)
+        viewBottom.translationY = rllBottom.translationY
+        imageCustomView.setImageBitmap(bitmapBodyNewView)
+    }
+
+
+    private fun defaultTranslateView() {
+        hIcon = (rllCustomView.width.toFloat() * 0.1).toInt()
+        wIcon = (rllCustomView.width.toFloat() * 0.1).toInt()
+        iconTop.layoutParams.width = wIcon
+        iconTop.layoutParams.height = hIcon
+        iconTop.requestLayout()
+        iconBottom.layoutParams.width = wIcon
+        iconBottom.layoutParams.height = hIcon
+        iconBottom.requestLayout()
+        viewTop.layoutParams.height = hIcon
+        viewBottom.layoutParams.height = hIcon
+        Log.d("huy", "hIco = $hIcon")
+        Log.d("huy", "wIco = $wIcon")
+        imageCustomView.setImageBitmap(bitmapOrigin)
+        setTranslateY(bitmapOrigin!!.width, bitmapOrigin!!.height)
+        bitmapBodyNewView = bitmapOrigin!!
+        bitmapBodyNewReal = bitmapRealDefault!!
+        listBitmapView.add(bitmapOriginDefault)
+        listBitmapReal.add(bitmapRealDefault!!)
+        positionListBitmap++
+        cutViewBitmap(rllTop, rllBottom)
+        cutViewReal()
+        bitmap2ViewNew = bitmap2View
+        bitmap2NewReal = bitmap2Real
+    }
+
+    private fun drawBitmapReal(bitmap: Bitmap) {
+        val canvasBitmapReal = Canvas(bitmap)
+        canvasBitmapReal.drawBitmap(bitmap1Real, 0f, 0f, paint)
+        canvasBitmapReal.drawBitmap(bitmap2NewReal, 0f, bitmap1Real.height.toFloat(), paint)
+        canvasBitmapReal.drawBitmap(
+            bitmap3Real,
+            0f,
+            bitmap2NewReal.height + bitmap1Real.height.toFloat(),
+            paint
+        )
+    }
+
+    private fun drawBitmapView(bitmap: Bitmap) {
+        val canvasBitmapView = Canvas(bitmap)
+        canvasBitmapView.drawBitmap(bitmap1View, 0f, 0f, paint)
+        canvasBitmapView.drawBitmap(bitmap2ViewNew, 0f, bitmap1View.height.toFloat(), paint)
+        canvasBitmapView.drawBitmap(
+            bitmap3View,
+            0f,
+            bitmap2ViewNew.height + bitmap1View.height.toFloat(),
+            paint
+        )
+    }
+
     private fun onClick() {
-        iconUndoBodyTuner.setOnClickListener(this)
-        iconRedoBodyTuner.setOnClickListener(this)
-        iconSaveBodyTunerMagic.setOnClickListener { this }
-        iconCloseBodyTunerMagic.setOnClickListener(this)
+        LibClickAnimUtils.setOnCustomTouchViewScale(
+            iconUndoBodyTuner,
+            object : OnCustomClickListener {
+                override fun onCustomClick(v: View?, event: MotionEvent?) {
+                    if (positionListBitmap > 0) {
+                        positionListBitmap--
+                        imageCustomView.setImageBitmap(listBitmapView[positionListBitmap])
+
+                        bitmapOrigin = listBitmapView[positionListBitmap]
+                        bitmapBodyNewView = listBitmapView[positionListBitmap]
+                        bitmapRealDefault = listBitmapReal[positionListBitmap]
+                        bitmapBodyNewReal = listBitmapReal[positionListBitmap]
+                        seekbarBodyTuner.progress = 50
+                        setTranslateY(
+                            listBitmapView[positionListBitmap].width,
+                            listBitmapView[positionListBitmap].height
+                        )
+                        GlobalScope.launch {
+                            cutViewBitmap(rllTop, rllBottom)
+                            cutViewReal()
+                        }
+                        iconRedoBodyTuner.setColorFilter(Color.parseColor("#8167fd"))
+                    }
+                    if (positionListBitmap == 0) {
+                        iconUndoBodyTuner.setColorFilter(Color.parseColor("#8893cb"))
+                        iconCompareBodyTuner.setColorFilter(Color.parseColor("#8893cb"))
+                    }
+                }
+            })
+
+        LibClickAnimUtils.setOnCustomTouchViewScale(
+            iconRedoBodyTuner,
+            object : OnCustomClickListener {
+                override fun onCustomClick(v: View?, event: MotionEvent?) {
+                    if (positionListBitmap < listBitmapView.size - 1) {
+                        positionListBitmap++
+                        imageCustomView.setImageBitmap(listBitmapView[positionListBitmap])
+
+                        bitmapOrigin = listBitmapView[positionListBitmap]
+                        bitmapBodyNewView = listBitmapView[positionListBitmap]
+                        bitmapRealDefault = listBitmapReal[positionListBitmap]
+                        bitmapBodyNewReal = listBitmapReal[positionListBitmap]
+                        seekbarBodyTuner.progress = 50
+                        setTranslateY(
+                            listBitmapView[positionListBitmap].width,
+                            listBitmapView[positionListBitmap].height
+                        )
+                        GlobalScope.launch {
+                            cutViewBitmap(rllTop, rllBottom)
+                            cutViewReal()
+                        }
+                        iconUndoBodyTuner.setColorFilter(Color.parseColor("#8167fd"))
+                        iconCompareBodyTuner.setColorFilter(Color.parseColor("#8167fd"))
+                    }
+                    if (positionListBitmap == listBitmapView.size - 1) {
+                        iconRedoBodyTuner.setColorFilter(Color.parseColor("#8893cb"))
+                    }
+                }
+            })
+
+        LibClickAnimUtils.setOnCustomTouchViewScale(
+            iconSaveBodyTunerMagic,
+            object : OnCustomClickListener {
+                override fun onCustomClick(v: View?, event: MotionEvent?) {
+                    FileUtilsEditor(context) {
+                        Log.d("huy", "sucesss")
+                    }.saveExternal(
+                        bitmapBodyNewReal,
+                        System.currentTimeMillis().toString() + "",
+                        ".jpg",
+                        "image/jpeg",
+                        "huy"
+                    ) { path: String? ->
+
+                    }
+                    Log.d("huy", "click")
+                }
+            })
+
+        LibClickAnimUtils.setOnCustomTouchViewScale(
+            iconCloseBodyTunerMagic,
+            object : OnCustomClickListener {
+                override fun onCustomClick(v: View?, event: MotionEvent?) {
+                    bodyTunerListener?.onCloseBodyTuner()
+                }
+            })
+
     }
 
     private fun onTouchView() {
@@ -215,18 +336,19 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     fun setTranslateY(widthBitmap: Int, heightBitmap: Int) {
-        backGroundCutImage.layoutParams.height = (heightBitmap * 0.3f).toInt()
-        viewBackgroundCutImage.layoutParams.height = (heightBitmap * 0.3f).toInt()
-        backGroundCutImage.translationY = (heightBitmap * 0.3f)
-        viewBackgroundCutImage.translationY =  backGroundCutImage.translationY
+        backGroundCutImage.layoutParams.height = (heightBitmap * 0.2f).toInt()
+        viewBackgroundCutImage.layoutParams.height = (heightBitmap * 0.2f).toInt()
+        backGroundCutImage.translationY = (heightBitmap * 0.2f)
+        viewBackgroundCutImage.translationY = backGroundCutImage.translationY
         backGroundCutImage.layoutParams.width = widthBitmap
         viewBackgroundCutImage.layoutParams.width = widthBitmap
         rllTop.layoutParams.width = widthBitmap
         viewTop.layoutParams.width = widthBitmap
         viewBottom.layoutParams.width = widthBitmap
-        rllTop.translationY = backGroundCutImage.translationY - covertDptoPx(20f)
+        rllTop.translationY = backGroundCutImage.translationY - (hIcon / 2f)
         rllBottom.layoutParams.width = widthBitmap
-        rllBottom.translationY = backGroundCutImage.translationY + backGroundCutImage.layoutParams.height - covertDptoPx(20f)
+        rllBottom.translationY =
+            backGroundCutImage.translationY + backGroundCutImage.layoutParams.height - (hIcon / 2f)
         viewTop.translationY = rllTop.translationY
         viewBottom.translationY = rllBottom.translationY
     }
@@ -240,7 +362,7 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         )
     }
 
-    private fun bitmapRealScale(bitmap: Bitmap,percent: Int): Bitmap{
+    private fun bitmapRealScale(bitmap: Bitmap, percent: Int): Bitmap {
         return Bitmap.createScaledBitmap(
             bitmap,
             bitmap.width,
@@ -271,45 +393,51 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             bitmap3View = Bitmap.createBitmap(
                 bitmapOrigin!!,
                 0,
-                (rllBottom.translationY.toInt() + covertDptoPx(20f)).toInt(),
+                (rllBottom.translationY.toInt() + (hIcon / 2)),
                 bitmapOrigin!!.width, hBitmap3
 
             )
-
-            Log.d("huy","bitmaporigin = ${bitmapOrigin!!.height}")
-            Log.d("huy","bitmap1origin = ${bitmap1View.height}")
-            Log.d("huy","bitmap2origin = ${bitmap2View.height}")
-            Log.d("huy","bitmap1origin = ${bitmap3View.height}")
         } catch (Ex: Exception) {
             Log.d("huy", "lỗi rồi")
         }
     }
 
-    private fun cutViewReal(){
+    private fun cutViewReal() {
         try {
             val ratioBitmap1View = bitmap1View.width / bitmap1View.height.toFloat()
             val hBitmap1Real = wBitmapReal / ratioBitmap1View
             val ratioBitmap2View = bitmap2View.width / bitmap2View.height.toFloat()
             val hBitmap2Real = wBitmapReal / ratioBitmap2View
-//        val ratioBitmapOrigin = bitmapOrigin!!.width / bitmapOrigin!!.height.toFloat()
-//        val hBitmapReal = wBitmapReal /ratioBitmapOrigin
 
-            bitmap1Real = Bitmap.createBitmap(bitmapRealDefault!!,0,0,bitmapRealDefault!!.width,hBitmap1Real.roundToInt())
-            bitmap2Real = Bitmap.createBitmap(bitmapRealDefault!!,0,bitmap1Real.height,bitmapRealDefault!!.width,hBitmap2Real.roundToInt())
-//        val hBitmap3Real = hBitmapReal - bitmap1ViewReal.height - bitmap2ViewReal.height
-            val hBitmap3Real = bitmapRealDefault!!.height - bitmap1Real!!.height - bitmap2Real!!.height
-            bitmap3Real = Bitmap.createBitmap(bitmapRealDefault!!,0,bitmap1Real.height+bitmap2Real.height,bitmapRealDefault!!.width,hBitmap3Real)
-
-            Log.d("huy","bitmap1real = ${bitmap1Real.height}")
-            Log.d("huy","bitmap2real = ${bitmap2Real.height}")
-            Log.d("huy","bitmap1real = ${bitmap3Real.height}")
-        }catch (EX : Exception){
+            bitmap1Real = Bitmap.createBitmap(
+                bitmapRealDefault!!,
+                0,
+                0,
+                bitmapRealDefault!!.width,
+                hBitmap1Real.roundToInt()
+            )
+            bitmap2Real = Bitmap.createBitmap(
+                bitmapRealDefault!!,
+                0,
+                bitmap1Real.height,
+                bitmapRealDefault!!.width,
+                hBitmap2Real.roundToInt()
+            )
+            val hBitmap3Real = bitmapRealDefault!!.height - bitmap1Real.height - bitmap2Real.height
+            bitmap3Real = Bitmap.createBitmap(
+                bitmapRealDefault!!,
+                0,
+                bitmap1Real.height + bitmap2Real.height,
+                bitmapRealDefault!!.width,
+                hBitmap3Real
+            )
+        } catch (EX: Exception) {
             Log.d("huy", "lỗi rồi")
         }
 
 
-
     }
+
     private fun covertDptoPx(dp: Float): Float {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -330,8 +458,8 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     private var hBgCutImage = 0f
     private var hNewCusImage = 0f
     private var startTranslateBackGroundCutImageY = 0f
-   private var translateBackGroundCutImageY = 0f
-   private var newTranslateBackGroundCutImageY = 0f
+    private var translateBackGroundCutImageY = 0f
+    private var newTranslateBackGroundCutImageY = 0f
 
 
     @SuppressLint("ClickableViewAccessibility")
@@ -356,24 +484,24 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             distanceTopY = event.y - startTranslateTopY
                             newTranslateTopY = pointRllTop.y + distanceTopY
 
-                            if (newTranslateTopY < covertDptoPx(-20f)) {
-                                newTranslateTopY = covertDptoPx(-20f)
-                                hNewCusImage = rllBottom.translationY + covertDptoPx(20f)
+                            if (newTranslateTopY < (-hIcon / 2)) {
+                                newTranslateTopY = -hIcon / 2f
+                                hNewCusImage = rllBottom.translationY + (hIcon / 2)
                             } else {
                                 hNewCusImage = hBgCutImage - distanceTopY
-                                if (newTranslateTopY + covertDptoPx(40f) > rllBottom.translationY) {
-                                    newTranslateTopY = rllBottom.translationY - covertDptoPx(40f)
-                                    hNewCusImage = covertDptoPx(40f)
+                                if (newTranslateTopY + hIcon > rllBottom.translationY) {
+                                    newTranslateTopY = rllBottom.translationY - hIcon
+                                    hNewCusImage = hIcon.toFloat()
                                 }
                             }
-                            Log.d("huy", "$distanceTopY ")
                             rllTop.translationY = newTranslateTopY
-                            backGroundCutImage.translationY = newTranslateTopY + covertDptoPx(20f)
+                            backGroundCutImage.translationY = newTranslateTopY + (hIcon / 2)
                             backGroundCutImage.layoutParams.height = hNewCusImage.toInt()
-                            viewBackgroundCutImage.translationY =  backGroundCutImage.translationY
+                            viewBackgroundCutImage.translationY = backGroundCutImage.translationY
                             viewBackgroundCutImage.layoutParams.height = hNewCusImage.toInt()
                             Log.d("huy", "${backGroundCutImage.height}")
-
+                            rllTop.invalidate()
+                            rllTop.requestLayout()
                             backGroundCutImage.invalidate()
                             backGroundCutImage.requestLayout()
                         }
@@ -381,13 +509,13 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             if (backGroundCutImage.translationY == 0f) {
                                 backGroundCutImage.translationY = 1f
                             }
-                            seekbarBodyTuner.progress = 0
+                            seekbarBodyTuner.progress = 50
                             backGroundCutImage.visibility = View.INVISIBLE
                             viewTop.translationY = rllTop.translationY
-                            cutViewBitmap(rllTop, rllBottom)
-                            cutViewReal()
-                            Log.d("huy","bitmapRealDefault = ${bitmapRealDefault!!.height}")
-
+                            GlobalScope.launch {
+                                cutViewBitmap(rllTop, rllBottom)
+                                cutViewReal()
+                            }
                         }
                     }
                 }
@@ -398,9 +526,7 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             bitmapRealDefault = bitmapBodyNewReal
                             backGroundCutImage.visibility = View.VISIBLE
                             startTranslateBottomY = event.y
-                            Log.d("huy","bitmapRealDefault = ${bitmapRealDefault!!.height}")
                             hBgCutImage = (backGroundCutImage.layoutParams.height).toFloat()
-                            Log.d("huy", "hNewBgCutImage = $hBgCutImage")
                             pointRllBottom = PointF(rllBottom.translationX, rllBottom.translationY)
                         }
                         MotionEvent.ACTION_MOVE -> {
@@ -409,66 +535,76 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                             newTranslateBottomY = pointRllBottom.y + distanceBottomY
                             Log.d("huy", "$newTranslateBottomY")
 
-                            if (newTranslateBottomY + covertDptoPx(20f) > bitmapOrigin!!.height) {
+                            if (newTranslateBottomY + (hIcon / 2) > bitmapOrigin!!.height) {
                                 newTranslateBottomY =
-                                    bitmapOrigin!!.height.toFloat() - covertDptoPx(21f)
+                                    bitmapOrigin!!.height.toFloat() - (hIcon / 2 + covertDptoPx(1f))
                                 hNewCusImage =
-                                    bitmapOrigin!!.height - (rllTop.translationY + covertDptoPx(20f))
+                                    bitmapOrigin!!.height - (rllTop.translationY + (hIcon / 2))
                             } else {
                                 hNewCusImage = hBgCutImage + distanceBottomY
-                                if (newTranslateBottomY - covertDptoPx(40f) < rllTop.translationY) {
-                                    newTranslateBottomY = rllTop.translationY + covertDptoPx(40f)
-                                    hNewCusImage = covertDptoPx(40f)
+                                if (newTranslateBottomY - hIcon < rllTop.translationY) {
+                                    newTranslateBottomY = rllTop.translationY + hIcon
+                                    hNewCusImage = hIcon.toFloat()
                                 }
                             }
                             rllBottom.translationY = newTranslateBottomY
                             backGroundCutImage.layoutParams.height = hNewCusImage.toInt()
                             viewBackgroundCutImage.layoutParams.height = hNewCusImage.toInt()
+                            rllBottom.invalidate()
+                            rllBottom.requestLayout()
                             backGroundCutImage.invalidate()
                             backGroundCutImage.requestLayout()
                         }
                         MotionEvent.ACTION_UP -> {
-                            seekbarBodyTuner.progress = 0
+                            seekbarBodyTuner.progress = 50
                             backGroundCutImage.visibility = View.INVISIBLE
                             viewBottom.translationY = rllBottom.translationY
-                            cutViewBitmap(rllTop, rllBottom)
-                            cutViewReal()
+                            GlobalScope.launch {
+                                cutViewBitmap(rllTop, rllBottom)
+                                cutViewReal()
+                            }
 
                         }
                     }
                 }
 
-                viewBackgroundCutImage ->{
-                    when (event.action){
-                        MotionEvent.ACTION_DOWN ->{
+                viewBackgroundCutImage -> {
+                    when (event.action) {
+                        MotionEvent.ACTION_DOWN -> {
                             bitmapOrigin = bitmapBodyNewView
                             bitmapRealDefault = bitmapBodyNewReal
                             backGroundCutImage.visibility = View.VISIBLE
                             rllTop.visibility = View.INVISIBLE
                             rllBottom.visibility = View.INVISIBLE
-                            Log.d("huy","backGroundCutImage")
                             hBgCutImage = (backGroundCutImage.layoutParams.height).toFloat()
-                            pointBackGroundCutImage = PointF(backGroundCutImage.translationX,backGroundCutImage.translationY)
+                            pointBackGroundCutImage = PointF(
+                                backGroundCutImage.translationX,
+                                backGroundCutImage.translationY
+                            )
                             startTranslateBackGroundCutImageY = event.y
                         }
                         MotionEvent.ACTION_MOVE -> {
-                            translateBackGroundCutImageY = event.y - startTranslateBackGroundCutImageY
-                            newTranslateBackGroundCutImageY = pointBackGroundCutImage.y + translateBackGroundCutImageY
+                            translateBackGroundCutImageY =
+                                event.y - startTranslateBackGroundCutImageY
+                            newTranslateBackGroundCutImageY =
+                                pointBackGroundCutImage.y + translateBackGroundCutImageY
 
-                            if (newTranslateBackGroundCutImageY <= 0f){
-                                newTranslateBackGroundCutImageY = 0f
+                            if (newTranslateBackGroundCutImageY <= 0f) {
+                                newTranslateBackGroundCutImageY = 1f
                             }
-                            if (newTranslateBackGroundCutImageY+ hBgCutImage >= bitmapOrigin!!.height){
-                                newTranslateBackGroundCutImageY = bitmapOrigin!!.height - hBgCutImage
+                            if (newTranslateBackGroundCutImageY + hBgCutImage >= bitmapOrigin!!.height) {
+                                newTranslateBackGroundCutImageY =
+                                    bitmapOrigin!!.height - hBgCutImage
                             }
                             backGroundCutImage.translationY = newTranslateBackGroundCutImageY
-                            rllTop.translationY = backGroundCutImage.translationY- covertDptoPx(20f)
+                            rllTop.translationY = backGroundCutImage.translationY - (hIcon / 2)
                             viewTop.translationY = rllTop.translationY
-                            rllBottom.translationY = backGroundCutImage.translationY-covertDptoPx(20f)+ backGroundCutImage.layoutParams.height
+                            rllBottom.translationY =
+                                backGroundCutImage.translationY - (hIcon / 2 + covertDptoPx(1f)) + backGroundCutImage.layoutParams.height
                             viewBottom.translationY = rllBottom.translationY
                         }
                         MotionEvent.ACTION_UP -> {
-                            seekbarBodyTuner.progress = 0
+                            seekbarBodyTuner.progress = 50
                             rllTop.visibility = View.VISIBLE
                             rllBottom.visibility = View.VISIBLE
                             cutViewBitmap(rllTop, rllBottom)
@@ -495,77 +631,4 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             true
         }
     }
-
-    override fun onClick(v: View?) {
-        when (v!!) {
-            iconUndoBodyTuner -> {
-                if (positionListBitmap > 0) {
-                    positionListBitmap--
-                    imageCustomView.setImageBitmap(listBitmapView[positionListBitmap])
-
-                    bitmapOrigin = listBitmapView[positionListBitmap]
-                    bitmapBodyNewView = listBitmapView[positionListBitmap]
-                    bitmapRealDefault = listBitmapReal[positionListBitmap]
-                    bitmapBodyNewReal = listBitmapReal[positionListBitmap]
-                    seekbarBodyTuner.progress = 0
-                    setTranslateY(
-                        listBitmapView[positionListBitmap].width,
-                        listBitmapView[positionListBitmap].height
-                    )
-                    cutViewBitmap(rllTop, rllBottom)
-                    cutViewReal()
-                    iconRedoBodyTuner.setColorFilter(Color.parseColor("#8167fd"))
-                }
-                if (positionListBitmap == 0) {
-                    iconUndoBodyTuner.setColorFilter(Color.parseColor("#8893cb"))
-                    iconCompareBodyTuner.setColorFilter(Color.parseColor("#8893cb"))
-                }
-            }
-
-            iconRedoBodyTuner -> {
-                if (positionListBitmap < listBitmapView.size - 1) {
-                    positionListBitmap++
-                    imageCustomView.setImageBitmap(listBitmapView[positionListBitmap])
-
-                    bitmapOrigin = listBitmapView[positionListBitmap]
-                    bitmapBodyNewView = listBitmapView[positionListBitmap]
-                    bitmapRealDefault = listBitmapReal[positionListBitmap]
-                    bitmapBodyNewReal = listBitmapReal[positionListBitmap]
-                    seekbarBodyTuner.progress = 0
-                    setTranslateY(
-                        listBitmapView[positionListBitmap].width,
-                        listBitmapView[positionListBitmap].height
-                    )
-                    cutViewBitmap(rllTop, rllBottom)
-                    cutViewReal()
-                    iconUndoBodyTuner.setColorFilter(Color.parseColor("#8167fd"))
-                    iconCompareBodyTuner.setColorFilter(Color.parseColor("#8167fd"))
-                }
-                if (positionListBitmap == listBitmapView.size - 1) {
-                    iconRedoBodyTuner.setColorFilter(Color.parseColor("#8893cb"))
-                }
-            }
-
-            iconSaveBodyTunerMagic -> {
-
-                Log.d("huy","click")
-
-//                bodyTunerListener?.onApplyBodyTuner(saveBitmap())
-            }
-
-
-            iconCloseBodyTunerMagic -> {
-                FileUtilsEditor(context) {
-                    Log.d("huy","sucesss")
-                }.saveExternal(bitmapBodyNewReal, System.currentTimeMillis().toString() + "", ".jpg", "image/jpeg", "huy") { path: String? ->
-
-                }
-                Log.d("huy","click")
-
-//                bodyTunerListener?.onCloseBodyTuner()
-            }
-
-        }
-    }
-
 }
