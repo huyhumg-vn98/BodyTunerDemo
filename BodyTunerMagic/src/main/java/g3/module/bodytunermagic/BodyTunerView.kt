@@ -81,7 +81,7 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
                 newHeightBitmapOrigin =
                     newWidthBitmapOrigin * (hBitmapOrigin / wBitmapOrigin.toFloat())
                 if (newHeightBitmapOrigin > rllCustomView.height.toFloat()) {
-                    newHeightBitmapOrigin = rllCustomView.height * 0.9.toFloat()
+                    newHeightBitmapOrigin = rllCustomView.height * 0.8.toFloat()
                     newWidthBitmapOrigin =
                         newHeightBitmapOrigin * (wBitmapOrigin / hBitmapOrigin.toFloat())
                 }
@@ -164,6 +164,7 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
             hNewReal,
             Bitmap.Config.ARGB_8888
         )
+        txtMaxSize.visibility = View.INVISIBLE
         drawBitmapView(bitmapBodyNewView)
         GlobalScope.launch {
             drawBitmapReal(bitmapBodyNewReal)
@@ -179,8 +180,8 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
 
 
     private fun defaultTranslateView() {
-        hIcon = (rllCustomView.width.toFloat() * 0.1).toInt()
-        wIcon = (rllCustomView.width.toFloat() * 0.1).toInt()
+        hIcon = (rllCustomView.width.toFloat() * 0.07).toInt()
+        wIcon = (rllCustomView.width.toFloat() * 0.07).toInt()
         iconTop.layoutParams.width = wIcon
         iconTop.layoutParams.height = hIcon
         iconTop.requestLayout()
@@ -354,15 +355,6 @@ class BodyTunerView(context: Context, attrs: AttributeSet?) : FrameLayout(contex
     }
 
     private fun bitmapScale(bitmap: Bitmap, percent: Int): Bitmap {
-        return Bitmap.createScaledBitmap(
-            bitmap,
-            bitmap.width,
-            ((bitmap.height * (1 + percent * 0.01)).toInt()),
-            true
-        )
-    }
-
-    private fun bitmapRealScale(bitmap: Bitmap, percent: Int): Bitmap {
         return Bitmap.createScaledBitmap(
             bitmap,
             bitmap.width,
